@@ -1,0 +1,224 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+################################################################################################################
+# From here downwards all code has been added by Camiel. Note that all sensitive data is moved to secrets.yaml #
+################################################################################################################
+
+# Reverse proxy setup
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - !secret proxy_ip_1
+    - !secret proxy_ip_2
+    
+# Email Services
+notify:
+  - name: "Create to-do in Things.app"
+    platform: smtp
+    server: mail.antagonist.nl
+    port: 587
+    timeout: 15
+    username: !secret antagonist_username
+    password: !secret antagonist_password
+    sender: !secret antagonist_username
+    sender_name: "Home Assistant"
+    recipient: !secret things_email
+  - name: "Mastodon Bot"
+    platform: mastodon
+    access_token: !secret mastodon_access_token
+    client_id: !secret mastodon_client_id
+    client_secret: !secret mastodon_client_secret
+    base_url: https://social.schoonens.nl
+    
+# Sensors
+sensor:
+  # Afvalwijzer
+  - platform: afvalwijzer
+    provider: mijnafvalwijzer
+    postal_code: !secret afvalwijzer_postal_code
+    street_number: !secret afvalwijzer_street_number
+    suffix: ''
+    exclude_pickup_today: true
+    default_label: Geen
+    id: ''
+    exclude_list: ''
+  # Energieverbruik
+  - platform: template
+    sensors:
+        energieverbruik_totaal:
+            friendly_name: "Totaal Energieverbruik (Dal+Normaal)"
+            unit_of_measurement: 'kWh'
+            value_template: '{{ states("sensor.energy_consumed_tariff_1") | round(1) | float + states("sensor.energy_consumed_tariff_2") | float | round(1) }}'
+        energieteruglevering_totaal:
+            friendly_name: "Teruggeleverde Energie (Netto)"
+            unit_of_measurement: 'kWh'
+            value_template: '{{ states("sensor.energy_produced_tariff_1") | round (1) | float + states("sensor.energy_produced_tariff_2") | round(1) | float }}'
+        verbruik_woning:
+            friendly_name: "Energieverbruik Woning"
+            unit_of_measurement: 'kWh'
+            value_template: '{{ states("sensor.zonnepanelen_opbrengst_dag") | round(1) | float - states("sensor.teruglevering_dag") | round(1) | float + states("sensor.totaalverbruik_dag") | round(1) | float }}'
+  # Sensoren per groep zonnepanelen -> https://www.home-assistant.io/integrations/integration/. Deze sensoren zijn nodig om de W meting om te zetten naar kWh
+  - platform: integration
+    source: sensor.stp6_0_3av_40_341_pv_power_a
+    name: energy_produced_east_panels
+    unit_prefix: k
+    round: 2
+  - platform: integration  
+    source: sensor.stp6_0_3av_40_341_pv_power_b
+    name: energy_produced_west_panels
+    unit_prefix: k
+    round: 2
+    
+# Packages - Friendly names for certain sensors
+homeassistant:
+  customize:
+    # Afvalwijzer
+    sensor.afvalwijzer_today:
+      friendly_name: Vandaag
+    sensor.afvalwijzer_tomorrow:
+      friendly_name: Morgen
+    sensor.afvalwijzer_next_item:
+      friendly_name: Volgende ophaaldienst
+    sensor.afvalwijzer_next_in_days:
+      friendly_name: Volgende ophaaldienst in dagen
+    sensor.afvalwijzer_gft:
+      friendly_name: GFT
+    sensor.afvalwijzer_papier:
+      friendly_name: Oud Papier
+    sensor.afvalwijzer_pmd:
+      friendly_name: PMD
+    sensor.afvalwijzer_restafval:
+      friendly_name: Restafval
+    input_boolean.waste_reminder:
+      icon: mdi:reminder
+    # Easee EV Charger
+    sensor.zuid_linschoterkade_9a_lifetime_energy:
+      friendly_name: Laadpaal
+    # Solar Pannel Sensors
+    sensor.energy_produced_east_panels:
+      friendly_name: Oostzijde
+    sensor.energy_produced_west_panels:
+      friendly_name: Westzijde
+
+# Define light groups in a separate file
+light:
+light groups: !include light-groups.yaml
+
+# Utility Meter
+utility_meter:
+# Daltarief
+  dal_hourly_energy:
+    source: sensor.energy_consumed_tariff_1
+    name: Daltarief - Uur
+    cycle: hourly
+  dal_daily_energy:
+    source: sensor.energy_consumed_tariff_1
+    name: Daltarief - Dag
+    cycle: daily
+  dal_monthly_energy:
+    source: sensor.energy_consumed_tariff_1
+    name: Daltarief - Maand
+    cycle: monthly
+  dal_yearly_energy:
+    source: sensor.energy_consumed_tariff_1
+    name: Daltarief - Jaar
+    cycle: yearly
+# Normaaltarief
+  normaal_hourly_energy:
+    source: sensor.energy_consumed_tariff_2
+    name: Normaaltarief - Uur
+    cycle: hourly
+  normaal_daily_energy:
+    source: sensor.energy_consumed_tariff_2
+    name: Normaaltarief - Dag
+    cycle: daily
+  normaal_monthly_energy:
+    source: sensor.energy_consumed_tariff_2
+    name: Normaaltarief - Maand
+    cycle: monthly
+  normaal_yearly_energy:
+    source: sensor.energy_consumed_tariff_2
+    name: Normaaltarief - Jaar
+    cycle: yearly
+# Totaalverbruik (Dal + Normaal op basis van aangemaakte template sensor)
+  totaal_hourly_energy:
+    source: sensor.energieverbruik_totaal
+    name: Totaalverbruik - Uur
+    cycle: hourly
+  totaal_daily_energy:
+    source: sensor.energieverbruik_totaal
+    name: Totaalverbruik - Dag
+    cycle: daily
+  totaal_monthly_energy:
+    source: sensor.energieverbruik_totaal
+    name: Totaalverbruik - Maand
+    cycle: monthly
+  totaal_yearly_energy:
+    source: sensor.energieverbruik_totaal
+    name: Totaalverbruik - Jaar
+    cycle: yearly
+# Totaal opgewekte energie (Oost + West) in kWh
+  zonopbrengst_hourly:
+    source: sensor.stp6_0_3av_40_341_total_yield
+    name: Zonnepanelen Opbrengst - Uur
+    cycle: hourly
+  zonopbrengst_daily:
+    source: sensor.stp6_0_3av_40_341_total_yield
+    name: Zonnepanelen Opbrengst - Dag
+    cycle: daily
+  zonopbrengst_monthly:
+    source: sensor.stp6_0_3av_40_341_total_yield
+    name: Zonnepanelen Opbrengst - Maand
+    cycle: monthly
+  zonopbrengst_yearly:
+    source: sensor.stp6_0_3av_40_341_total_yield
+    name: Zonnepanelen Opbrengst - Jaar
+    cycle: yearly
+# Totaal gasverbruik
+  gasverbruik_hourly:
+    source: sensor.gas_consumed
+    name: Gasverbruik - Uur
+    cycle: hourly
+  gasverbruik_daily:
+    source: sensor.gas_consumed
+    name: Gasverbruik - Dag
+    cycle: daily
+  gasverbruik_monthly:
+    source: sensor.gas_consumed
+    name: Gasverbruik - Maand
+    cycle: monthly
+  gasverbruik_yearly:
+    source: sensor.gas_consumed
+    name: Gasverbruik - Year
+    cycle: yearly
+# Totaal teruglevering
+  teruglevering_hourly:
+    source: sensor.energieteruglevering_totaal
+    name: Teruglevering - Uur
+    cycle: hourly
+  teruglevering_daily:
+    source: sensor.energieteruglevering_totaal
+    name: Teruglevering - Dag
+    cycle: daily
+  teruglevering_monthly:
+    source: sensor.energieteruglevering_totaal
+    name: Teruglevering - Maand
+    cycle: monthly
+  teruglevering_yearly:
+    source: sensor.energieteruglevering_totaal
+    name: Teruglevering - Jaar
+    cycle: yearly
