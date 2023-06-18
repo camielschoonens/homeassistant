@@ -28,9 +28,9 @@ http:
     - !secret proxy_ip_2
     
 # Notification Services
-# Notification services created for Things.app via SMTP on a secret email address.
-# I use the Things.app notification service to create to-do's through automations.
 notify:
+# Notification service created for Things.app via SMTP on a secret email address that serves through secrets.yaml
+# I use the Things.app notification service to create to-do's in the app through Home Assistant automations.
   - name: "Create to-do in Things.app"
     platform: smtp
     server: mail.antagonist.nl
