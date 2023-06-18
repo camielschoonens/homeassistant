@@ -1,2 +1,2 @@
 # homeassistant
-Backup of HomeAssistant files
+Git repository with the backup of my HomeAssistant configuration.yaml.
