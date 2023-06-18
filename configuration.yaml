@@ -15,17 +15,21 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 ################################################################################################################
+# The code above this line is default Home Assistant code that comes with the vanilla configuration.yaml file  #
 # From here downwards all code has been added by Camiel. Note that all sensitive data is moved to secrets.yaml #
 ################################################################################################################
 
-# Reverse proxy setup
+# Reverse proxy setup to ensure that my Home Assistant docker can be approached from the public internet.
+# The IP adresses that are allowed are stored in secrets.yaml
 http:
   use_x_forwarded_for: true
   trusted_proxies:
     - !secret proxy_ip_1
     - !secret proxy_ip_2
     
-# Email Services
+# Notification Services
+# Notification services created for Things.app via SMTP on a secret email address.
+# I use the Things.app notification service to create to-do's through automations.
 notify:
   - name: "Create to-do in Things.app"
     platform: smtp
@@ -37,6 +41,7 @@ notify:
     sender: !secret antagonist_username
     sender_name: "Home Assistant"
     recipient: !secret things_email
+# My Mastodon Bot can be followed at https://social.schoonens.nl/@homeassistant
   - name: "Mastodon Bot"
     platform: mastodon
     access_token: !secret mastodon_access_token
