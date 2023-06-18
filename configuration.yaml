@@ -96,11 +96,11 @@ homeassistant:
     sensor.afvalwijzer_next_in_days:
       friendly_name: Volgende ophaaldienst in dagen
     sensor.afvalwijzer_gft:
-      friendly_name: GFT
+      friendly_name: GFT afval
     sensor.afvalwijzer_papier:
       friendly_name: Oud Papier
     sensor.afvalwijzer_pmd:
-      friendly_name: PMD
+      friendly_name: PMD afval
     sensor.afvalwijzer_restafval:
       friendly_name: Restafval
     input_boolean.waste_reminder:
