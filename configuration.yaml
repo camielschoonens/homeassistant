@@ -19,8 +19,10 @@ scene: !include scenes.yaml
 # From here downwards all code has been added by Camiel. Note that all sensitive data is moved to secrets.yaml #
 ################################################################################################################
 
-# Reverse proxy setup to ensure that my Home Assistant docker can be approached from the public internet.
-# The IP adresses that are allowed are stored in secrets.yaml
+################################################################################################################
+# Reverse proxy setup to ensure that my Home Assistant docker can be approached from the public internet.      #
+# The IP addresses that are allowed are stored in secrets.yaml. The reverse proxy can't be reached if you come #                       # in from an unlisted IP address.                                                                              #
+################################################################################################################
 http:
   use_x_forwarded_for: true
   trusted_proxies:
