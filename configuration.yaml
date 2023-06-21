@@ -29,10 +29,14 @@ http:
     - !secret proxy_ip_1
     - !secret proxy_ip_2
     
-# Notification Services
+################################################################################################################
+# Notification Services are used to send notifications or messages to specific services that Home Assistant    #
+# supports. I'm using two different services at this moment.                                                   #
+################################################################################################################
 notify:
-# Notification service created for Things.app via SMTP on a secret email address that serves through secrets.yaml
-# I use the Things.app notification service to create to-do's in the app through Home Assistant automations.
+# A notification service created for Things.app via SMTP on a secret email address that is served through secrets.yaml
+# I use the Things.app notification service to create to-do's in the app through automations. E.g. for replacing a
+# battery of an device that's running low on battery power.
   - name: "Create to-do in Things.app"
     platform: smtp
     server: mail.antagonist.nl
@@ -43,7 +47,8 @@ notify:
     sender: !secret antagonist_username
     sender_name: "Home Assistant"
     recipient: !secret things_email
-# My Mastodon Bot can be followed at https://social.schoonens.nl/@homeassistant
+# For the fun of it I've created a Mastodon Bot can be followed at https://social.schoonens.nl/@homeassistant
+# it's receiving notifications on my daily energy consumption and production.
   - name: "Mastodon Bot"
     platform: mastodon
     access_token: !secret mastodon_access_token
