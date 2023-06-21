@@ -88,7 +88,7 @@ sensor:
             value_template: '{{ states("sensor.energy_produced_tariff_1") | round (1) | float + states("sensor.energy_produced_tariff_2") | round(1) | float }}'
 # A sensor that calculates the net usage of my household by taking the total production, deducting that number with 
 # what has been delivered to the grid (the difference is consumed locally) and then adding the energy used from the grid to
-# calculate the total.
+# calculate the total. The sensors referenced here are coming from the 'Utility Meter' sensor created lower in this file.
         verbruik_woning:
             friendly_name: "Energieverbruik Woning"
             unit_of_measurement: 'kWh'
