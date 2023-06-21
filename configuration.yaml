@@ -55,10 +55,14 @@ notify:
     client_id: !secret mastodon_client_id
     client_secret: !secret mastodon_client_secret
     base_url: https://social.schoonens.nl
-    
-# Sensors
+
+################################################################################################################    
+# Sensors are a basic integration in Home Assistant. They monitor the states and conditions of a variety of    #
+# entities. Below are the sensors that I've created manually                                                   #
+################################################################################################################
 sensor:
-  # Afvalwijzer
+# 'Afvalwijzer' or waste collection sensor to monitor when what types of waste are collected at what day.
+# For security reasons I've moved all references to my house address to secrets.yaml
   - platform: afvalwijzer
     provider: mijnafvalwijzer
     postal_code: !secret afvalwijzer_postal_code
@@ -68,17 +72,23 @@ sensor:
     default_label: Geen
     id: ''
     exclude_list: ''
-  # Energieverbruik
+# 'Energieverbruik' or energy consumption and production sensors that I added additionally to do calculations
+# with the meter readings that I'm collecting from my Energy and Gas meters.
   - platform: template
     sensors:
+# A sensor to sum the total energy used measured on two different meter tariffs.
         energieverbruik_totaal:
             friendly_name: "Totaal Energieverbruik (Dal+Normaal)"
             unit_of_measurement: 'kWh'
             value_template: '{{ states("sensor.energy_consumed_tariff_1") | round(1) | float + states("sensor.energy_consumed_tariff_2") | float | round(1) }}'
+# A sensor to sum the total energy delivered to the grid on two different meter tariffs.
         energieteruglevering_totaal:
             friendly_name: "Teruggeleverde Energie (Netto)"
             unit_of_measurement: 'kWh'
             value_template: '{{ states("sensor.energy_produced_tariff_1") | round (1) | float + states("sensor.energy_produced_tariff_2") | round(1) | float }}'
+# A sensor that calculates the net usage of my household by taking the total production, deducting that number with 
+# what has been delivered to the grid (the difference is consumed locally) and then adding the energy used from the grid to
+# calculate the total.
         verbruik_woning:
             friendly_name: "Energieverbruik Woning"
             unit_of_measurement: 'kWh'
