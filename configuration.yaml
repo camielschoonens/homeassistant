@@ -28,6 +28,12 @@ http:
   trusted_proxies:
     - !secret proxy_ip_1
     - !secret proxy_ip_2
+
+################################################################################################################
+# Define light groups in a separate file to keep things a bit structured here                                  #
+################################################################################################################
+  light:
+  light groups: !include light-groups.yaml
     
 ################################################################################################################
 # Notification Services are used to send notifications or messages to specific services that Home Assistant    #
@@ -72,8 +78,8 @@ sensor:
     default_label: Geen
     id: ''
     exclude_list: ''
-# 'Energieverbruik' or energy consumption and production sensors that I added additionally to do calculations
-# with the meter readings that I'm collecting from my Energy and Gas meters.
+# 'Energieverbruik' or energy consumption and production sensors that I added to do calculations with the meter
+# readings that I'm collecting from my Energy and Gas meters.
   - platform: template
     sensors:
 # A sensor to sum the total energy used measured on two different meter tariffs.
@@ -135,10 +141,6 @@ homeassistant:
       friendly_name: Oostzijde
     sensor.energy_produced_west_panels:
       friendly_name: Westzijde
-
-# Define light groups in a separate file
-light:
-light groups: !include light-groups.yaml
 
 # Utility Meter
 utility_meter:
