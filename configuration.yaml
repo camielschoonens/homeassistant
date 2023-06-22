@@ -47,7 +47,7 @@ notify:
     sender: !secret antagonist_username
     sender_name: "Home Assistant"
     recipient: !secret things_email
-# For the fun of it I've created a Mastodon Bot can be followed at https://social.schoonens.nl/@homeassistant
+# For the fun of it I've created a Mastodon Bot that can be followed at https://social.schoonens.nl/@homeassistant
 # it's receiving notifications on my daily energy consumption and production.
   - name: "Mastodon Bot"
     platform: mastodon
