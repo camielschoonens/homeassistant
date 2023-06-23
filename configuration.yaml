@@ -253,3 +253,19 @@ utility_meter:
     name: Teruglevering - Jaar
     cycle: yearly
 # Geproduceerd en Verbruikt
+  geproduceerd_verbruikt_hourly:
+    source: sensor.produced_consumed
+    name: Geproduceerd en Verbruikt - Uur
+    cycle: hourly
+  geproduceerd_verbruikt_daily:
+    source: sensor.produced_consumed
+    name: Geproduceerd en Verbruikt - Dag
+    cycle: daily
+  geproduceerd_verbruikt_monthly:
+    source: sensor.produced_consumed
+    name: Geproduceerd en Verbruikt - Maand
+    cycle: monthly
+  geproduceerd_verbruikt_yearly:
+    source: sensor.produced_consumed
+    name: Geproduceerd en Verbruikt - Jaar
+    cycle: yearly
