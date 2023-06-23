@@ -32,13 +32,8 @@ http:
 ################################################################################################################
 # Define light groups in a separate file to keep things a bit structured here                                  #
 ################################################################################################################
-<<<<<<< HEAD
 light:
 light groups: !include light-groups.yaml
-=======
-  light:
-  light groups: !include light-groups.yaml
->>>>>>> main
     
 ################################################################################################################
 # Notification Services are used to send notifications or messages to specific services that Home Assistant    #
