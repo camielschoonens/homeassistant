@@ -28,6 +28,12 @@ http:
   trusted_proxies:
     - !secret proxy_ip_1
     - !secret proxy_ip_2
+
+################################################################################################################
+# Define light groups in a separate file to keep things a bit structured here                                  #
+################################################################################################################
+  light:
+  light groups: !include light-groups.yaml
     
 ################################################################################################################
 # Notification Services are used to send notifications or messages to specific services that Home Assistant    #
@@ -72,8 +78,8 @@ sensor:
     default_label: Geen
     id: ''
     exclude_list: ''
-# 'Energieverbruik' or energy consumption and production sensors that I added additionally to do calculations
-# with the meter readings that I'm collecting from my Energy and Gas meters.
+# 'Energieverbruik' or energy consumption and production sensors that I added to do calculations with the meter
+# readings that I'm collecting from my Energy and Gas meters.
   - platform: template
     sensors:
 # A sensor to sum the total energy used measured on two different meter tariffs.
@@ -93,7 +99,13 @@ sensor:
             friendly_name: "Energieverbruik Woning"
             unit_of_measurement: 'kWh'
             value_template: '{{ states("sensor.zonnepanelen_opbrengst_dag") | round(1) | float - states("sensor.teruglevering_dag") | round(1) | float + states("sensor.totaalverbruik_dag") | round(1) | float }}'
-  # Sensoren per groep zonnepanelen -> https://www.home-assistant.io/integrations/integration/. Deze sensoren zijn nodig om de W meting om te zetten naar kWh
+# A sensor to calculate the amount of energy that is locally produced and consumed, e.g. not given back to the grid. I've created a separate sensor for this
+# as calculating and rounding the sensor in the automation is leading to very long numbers that won't round.
+        produced_consumed:
+            friendly_name: "Geproduceerd-Verbruikt"
+            unit_of_measurement: 'kWh'
+            value_template: '{{ states("sensor.verbruik_woning") | float | round(1) - states("sensor.totaalverbruik_dag") | float | round(1) }}'
+# Sensoren per groep zonnepanelen -> https://www.home-assistant.io/integrations/integration/. Deze sensoren zijn nodig om de W meting om te zetten naar kWh
   - platform: integration
     source: sensor.stp6_0_3av_40_341_pv_power_a
     name: energy_produced_east_panels
@@ -135,10 +147,6 @@ homeassistant:
       friendly_name: Oostzijde
     sensor.energy_produced_west_panels:
       friendly_name: Westzijde
-
-# Define light groups in a separate file
-light:
-light groups: !include light-groups.yaml
 
 # Utility Meter
 utility_meter:
@@ -244,3 +252,4 @@ utility_meter:
     source: sensor.energieteruglevering_totaal
     name: Teruglevering - Jaar
     cycle: yearly
+# Geproduceerd en Verbruikt
