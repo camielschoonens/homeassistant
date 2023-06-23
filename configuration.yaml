@@ -21,7 +21,8 @@ scene: !include scenes.yaml
 
 ################################################################################################################
 # Reverse proxy setup to ensure that my Home Assistant docker can be approached from the public internet.      #
-# The IP addresses that are allowed are stored in secrets.yaml. The reverse proxy can't be reached if you come #                       # in from an unlisted IP address.                                                                              #
+# The IP addresses that are allowed are stored in secrets.yaml. The reverse proxy can't be reached if you come #
+# in from an unlisted IP address.                                                                              #
 ################################################################################################################
 http:
   use_x_forwarded_for: true
@@ -78,10 +79,14 @@ sensor:
     default_label: Geen
     id: ''
     exclude_list: ''
-# 'Energieverbruik' or energy consumption and production sensors that I added to do calculations with the meter
-# readings that I'm collecting from my Energy and Gas meters.
+
+################################################################################################################    
+# The template integration allows creating entities which derive their values from other data.                 #
+################################################################################################################
   - platform: template
     sensors:
+# 'Energieverbruik' or energy consumption and production sensors that I added to do calculations with the meter
+# readings that I'm collecting from my Energy and Gas meters.
 # A sensor to sum the total energy used measured on two different meter tariffs.
         energieverbruik_totaal:
             friendly_name: "Totaal Energieverbruik (Dal+Normaal)"
