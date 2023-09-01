@@ -291,5 +291,5 @@ utility_meter:
   laadpaal_yearly:
     source: sensor.zuid_linschoterkade_9a_lifetime_energy
     name: Laadpaal Verbruik - Jaar
-    cycle: yearly 
+    cycle: yearly
   
