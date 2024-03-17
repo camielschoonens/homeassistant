@@ -146,7 +146,7 @@ homeassistant:
     input_boolean.waste_reminder:
       icon: mdi:reminder
     # Easee EV Charger
-    sensor.zuid_linschoterkade_9a_lifetime_energy:
+    sensor.easee_EV_lifetime_energy:
       friendly_name: Laadpaal
     # Solar Pannel Sensors
     sensor.energy_produced_east_panels:
