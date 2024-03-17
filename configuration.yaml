@@ -277,19 +277,19 @@ utility_meter:
     cycle: yearly
 # Afgenomen energie door de laadpaal
   laadpaal_hourly:
-    source: sensor.zuid_linschoterkade_9a_lifetime_energy
+    source: sensor.EV_lifetime_lifetime_energy
     name: Laadpaal Verbruik - Uur
     cycle: hourly
   laadpaal_daily:
-    source: sensor.zuid_linschoterkade_9a_lifetime_energy
+    source: sensor.EV_lifetime_lifetime_energy
     name: Laadpaal Verbruik - Dag
     cycle: daily
   laadpaal_monthly:
-    source: sensor.zuid_linschoterkade_9a_lifetime_energy
+    source: sensor.EV_lifetime_lifetime_energy
     name: Laadpaal Verbruik - Maand
     cycle: monthly
   laadpaal_yearly:
-    source: sensor.zuid_linschoterkade_9a_lifetime_energy
+    source: sensor.EV_lifetime_lifetime_energy
     name: Laadpaal Verbruik - Jaar
     cycle: yearly
   
